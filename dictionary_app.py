@@ -279,7 +279,7 @@ def search_corpus_from_db(conn, search_definition_query, selected_pos):
 # --- 4. Streamlit User Interface ---
 
 st.set_page_config(layout="wide") # Use wide layout for more space
-st.title("📖 [alar.ink](https://alar.ink/) Corpus English Definition Search (SQLite)")
+st.title("📖 [alar.ink](https://alar.ink/) Corpus English Definition Search")
 st.markdown("""
 Search within [alar.ink](https://alar.ink/)'s English definitions for a matching word in Kannada and filter by part of speech (type).
 """)
