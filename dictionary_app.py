@@ -278,10 +278,16 @@ def search_corpus_from_db(conn, search_definition_query, selected_pos):
 
 # --- 4. Streamlit User Interface ---
 
-st.set_page_config(layout="wide") # Use wide layout for more space
+st.set_page_config(page_title="Alar.ink Reverse", layout="wide") # Use wide layout for more space
 st.title("📖 [alar.ink](https://alar.ink/) Corpus English Definition Search")
 st.markdown("""
 Search within [alar.ink](https://alar.ink/)'s English definitions for a matching word in Kannada and filter by part of speech (type).
+Consider it a makeshift English-Kannada lookup as V. Krishna and Kailash Nadh ಅವರು work on the real thing. 
+Many thanks to them both for their hard work to make alar.ink possible - V. Krishna ಅವರೇ has worked on this for 50+ years!
+
+ವಿ. ಕೃಷ್ಣ ಮತ್ತು ಕೈಲಾಶ್ ನಾದ್ ಅವರೇ:
+ನಿಮ್ಮ ಪರಿಶ್ರಮಕ್ಕೆ ಹೃತ್ಪೂರ್ವಕ ಧನ್ಯವಾದಗಳು. ಈ ಅದ್ಭುತ ನಿಘಂಟು ನನಗೆ ಕನ್ನಡವನ್ನು ಕಲಿಯಲು ಅಪಾರ ನೆರವು ನೀಡಿದೆ. 
+ವಿ. ಕೃಷ್ಣ ಅವರೇ, ನಿಮ್ಮ ಐವತ್ತು ವರ್ಷದ ಪ್ರಯತ್ನ ಬಗ್ಗೆ ಓದುವಾಗ ನಿಮ್ಮ ನಿದರ್ಶನವನ್ನು ಅನುಸರಿಸಲು ನನಗೆ ಪ್ರೇರಣೆಯಾಗಿದೆ. 
 """)
 
 # Attempt to initialize database connection.
