@@ -120,7 +120,7 @@ Consider this a makeshift English-Kannada lookup to serve in the meantime as V. 
 """)
 
 # Load the dictionary data from alar.yml
-word_dict_lst = load_yaml_from_file("alar_stemmed.yml")
+word_dict_lst = load_yaml_from_file("alar_stub.yml")
 
 if not word_dict_lst:
     st.error("Dictionary data ('alar.yml') could not be loaded or is empty. Please ensure the file exists, is correctly formatted, and contains data.")
@@ -182,8 +182,8 @@ else:
                             expander_pos = first_def.get("type")
                 
                 with st.expander(f"{display_word} ({expander_pos})", expanded=(i == 0)): # Expand first result
-                    if entry_data.get('head'):
-                        st.markdown(f"**Head:** {entry_data.get('head')}")
+                    # if entry_data.get('head'):
+                    #     st.markdown(f"**Head:** {entry_data.get('head')}")
                     if entry_data.get('phone'):
                         st.markdown(f"**Phonetic:** {entry_data.get('phone')}")
                     if entry_data.get('origin'):

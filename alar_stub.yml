@@ -1,0 +1,728 @@
+- id: 1
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 272090
+    entry: the first letter and the first vowel of the Kannaḍa alphabet;
+    type: noun
+    _stemmed_words_list:
+    - alphabet
+    - and
+    - first
+    - kannaḍa
+    - letter
+    - of
+    - the
+    - vowel
+  - id: 304829
+    entry: ಅ ಆ ಬಾರದಿದ್ದರೂ ಅಮರವಾದರೂ ಹೇಳು aā bāradiddarū amaravādarū heḷu (prov.) even
+      the illiterate must know the lexicon.
+    type: noun
+    _stemmed_words_list:
+    - amaravādarū
+    - aā
+    - bāradiddarū
+    - even
+    - heḷu
+    - illiter
+    - know
+    - lexicon
+    - must
+    - prov
+    - the
+    - ಅ
+    - ಆ
+- id: 2
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 186998
+    entry: the first of the three syllables that make the sacred compound-syllable
+      'ಓಂ'.
+    type: noun
+    _stemmed_words_list:
+    - compound-syl
+    - first
+    - make
+    - of
+    - sacr
+    - syllabl
+    - that
+    - the
+    - three
+- id: 3
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 192443
+    entry: an indeclinable used as an end termination to show report or tradition
+      - 'as they say', 'as reported', 'is it not'.
+    type: independent clause
+    _stemmed_words_list:
+    - '-'
+    - an
+    - as
+    - end
+    - indeclin
+    - it
+    - not
+    - or
+    - report
+    - say
+    - show
+    - termin
+    - they
+    - to
+    - tradit
+    - use
+- id: 4
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 209396
+    entry: an indeclinable termination to verbs to add politeness in addressing (ನೋಡು>ನೋಡ,
+      ನೋಡಾ) the second person in singular number.
+    type: independent clause
+    _stemmed_words_list:
+    - add
+    - address
+    - an
+    - in
+    - indeclin
+    - number
+    - person
+    - polit
+    - second
+    - singular
+    - termin
+    - the
+    - to
+    - verb
+- id: 5
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 311400
+    entry: an indeclinable to verbs to make it interrogative.
+    type: independent clause
+    _stemmed_words_list:
+    - an
+    - indeclin
+    - interrog
+    - it
+    - make
+    - to
+    - verb
+- id: 6
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 293294
+    entry: a termination to nouns or pronouns to express them in possessive case (the
+      sixth case in Kannaḍa grammar).
+    type: independent clause
+    _stemmed_words_list:
+    - a
+    - case
+    - express
+    - grammar
+    - in
+    - kannaḍa
+    - noun
+    - or
+    - possess
+    - pronoun
+    - sixth
+    - termin
+    - the
+    - them
+    - to
+- id: 7
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 279972
+    entry: a particle, used at the end, to form personal nouns while compounding (as
+      ಅಯ್ಸರಳು >ಅಯ್ಸರಳ, ಕಾರೊಡಲ).
+    type: independent clause
+    _stemmed_words_list:
+    - a
+    - as
+    - at
+    - compound
+    - end
+    - form
+    - noun
+    - particl
+    - person
+    - the
+    - to
+    - use
+    - while
+- id: 8
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 243158
+    entry: a prefix, corresponding to 'in' or 'un' of English, used as a negative
+      particle to mean (a) 'negation', 'absence', (b) distinction, difference, (c)
+      'bad', 'unfit', (d) 'opposition'.
+    type: preposition
+    _stemmed_words_list:
+    - a
+    - as
+    - b
+    - c
+    - correspond
+    - d
+    - differ
+    - distinct
+    - english
+    - mean
+    - negat
+    - of
+    - or
+    - particl
+    - prefix
+    - to
+    - use
+- id: 9
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 317200
+    entry: a termination of the infinitive (as in ಎಸಗು+ಅ=ಎಸಗ for ಎಸಗಲು).
+    type: noun
+    _stemmed_words_list:
+    - a
+    - as
+    - for
+    - in
+    - infinit
+    - of
+    - termin
+    - the
+- id: 10
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 219981
+    entry: a termination of the third person in the neuter of the negative (as in
+      ಸಲ್ಲ=ಸಲ್ಲದು).
+    type: noun
+    _stemmed_words_list:
+    - a
+    - as
+    - in
+    - negat
+    - neuter
+    - of
+    - person
+    - termin
+    - the
+    - third
+- id: 11
+  head: ಅ
+  entry: ಅ
+  phone: a
+  origin: ''
+  info: ''
+  defs:
+  - id: 193258
+    entry: any of the Hindu trinity, Brahma, Viṣṇu and Śiva.
+    type: noun
+    _stemmed_words_list:
+    - and
+    - ani
+    - brahma
+    - hindu
+    - of
+    - the
+    - triniti
+    - viṣṇu
+    - śiva
+- id: 12
+  head: ಅ
+  entry: ಅ ಆ
+  phone: a ā
+  origin: ''
+  info: ''
+  defs:
+  - id: 339609
+    entry: = ಅ ಆ ಇ ಈ.
+    type: noun
+    _stemmed_words_list:
+    - ಅ
+    - ಆ
+    - ಇ
+    - ಈ
+- id: 13
+  head: ಅ
+  entry: ಅಅಃ
+  phone: a-ah
+  origin: ''
+  info: ''
+  defs:
+  - id: 158775
+    entry: an interjection for expressing grief, pain, etc.
+    type: interjection
+    _stemmed_words_list:
+    - an
+    - etc
+    - express
+    - for
+    - grief
+    - interject
+    - pain
+- id: 14
+  head: ಅ
+  entry: ಅ ಆ ಇ ಈ
+  phone: aāi ī
+  origin: ''
+  info: ''
+  defs:
+  - id: 180130
+    entry: (pl.) the alphabets.
+    type: noun
+    _stemmed_words_list:
+    - alphabet
+    - pl
+    - the
+  - id: 332575
+    entry: the primary knowledge of a subject; the rudiments.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - knowledg
+    - of
+    - primari
+    - rudiment
+    - subject
+    - the
+- id: 15
+  head: ಅ
+  entry: ಅಂ
+  phone: am
+  origin: ''
+  info: ''
+  defs:
+  - id: 322167
+    entry: a conjunctional suffix, affixed to the end of each word to be connected
+      in a sentence.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - affix
+    - be
+    - conjunct
+    - connect
+    - each
+    - end
+    - in
+    - of
+    - sentenc
+    - suffix
+    - the
+    - to
+    - word
+- id: 16
+  head: ಅ
+  entry: ಅಂಕ
+  phone: aŋka
+  origin: ''
+  info: ''
+  defs:
+  - id: 198154
+    entry: a rod of metal or wood bent sharply backward at one end, to catch or hold
+      an object; a hook.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - an
+    - at
+    - backward
+    - bent
+    - catch
+    - end
+    - hold
+    - hook
+    - metal
+    - object
+    - of
+    - one
+    - or
+    - rod
+    - sharpli
+    - to
+    - wood
+  - id: 242108
+    entry: an instrument or a weapon having a hook-end.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - an
+    - have
+    - hook-end
+    - instrument
+    - or
+    - weapon
+  - id: 195567
+    entry: the state of being bent or crooked; a bend; crookedness.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - be
+    - bend
+    - bent
+    - crook
+    - crooked
+    - of
+    - or
+    - state
+    - the
+  - id: 315408
+    entry: a support for a horse-rider's foot; stirrup.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - foot
+    - for
+    - horse-rid
+    - stirrup
+    - support
+  - id: 216634
+    entry: a device consisting of a bar turning about a fixed point, the fulcrum,
+      using power or force applied at a second point to lift or sustain a weight at
+      a third point; a lever.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - about
+    - appli
+    - at
+    - bar
+    - consist
+    - devic
+    - fix
+    - forc
+    - fulcrum
+    - lever
+    - lift
+    - of
+    - or
+    - point
+    - power
+    - second
+    - sustain
+    - the
+    - third
+    - to
+    - turn
+    - use
+    - weight
+  - id: 207453
+    entry: the fold of the body of a person sitting; the lap.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - bodi
+    - fold
+    - lap
+    - of
+    - person
+    - sit
+    - the
+  - id: 280074
+    entry: the side of an animal (from the ribs to the thigh) or of anything; flank.
+    type: noun
+    _stemmed_words_list:
+    - an
+    - anim
+    - anyth
+    - flank
+    - from
+    - of
+    - or
+    - rib
+    - side
+    - the
+    - thigh
+    - to
+  - id: 191707
+    entry: the whole physical frame of a person or an animal; the body.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - an
+    - anim
+    - bodi
+    - frame
+    - of
+    - or
+    - person
+    - physic
+    - the
+    - whole
+  - id: 228456
+    entry: a long mark having no breadth or thickness, connecting to different points
+      on the same plane; a line.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - breadth
+    - connect
+    - differ
+    - have
+    - line
+    - long
+    - mark
+    - 'no'
+    - 'on'
+    - or
+    - plane
+    - point
+    - same
+    - the
+    - thick
+    - to
+  - id: 203217
+    entry: a charecter representing, in writing, a number; a figure.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - charect
+    - figur
+    - in
+    - number
+    - repres
+    - write
+  - id: 331878
+    entry: a visual indication; a mark; a sign, symbol or token.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - indic
+    - mark
+    - or
+    - sign
+    - symbol
+    - token
+    - visual
+  - id: 156855
+    entry: a mark or a spot made by the drop of wet matter; hence, (fig.) a mark of
+      infamy; stigma; a stain.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - by
+    - drop
+    - fig
+    - henc
+    - infami
+    - made
+    - mark
+    - matter
+    - of
+    - or
+    - spot
+    - stain
+    - stigma
+    - the
+    - wet
+  - id: 257381
+    entry: that by which a person or thing is called or known; a name.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - by
+    - call
+    - is
+    - known
+    - name
+    - or
+    - person
+    - that
+    - thing
+    - which
+  - id: 279779
+    entry: an appellation attached to one's name as a mark of distinction; a title.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - an
+    - appel
+    - as
+    - attach
+    - distinct
+    - mark
+    - name
+    - of
+    - one
+    - titl
+    - to
+  - id: 315331
+    entry: widespread high estimation; renown; fame.
+    type: noun
+    _stemmed_words_list:
+    - estim
+    - fame
+    - high
+    - renown
+    - widespread
+  - id: 300439
+    entry: a distinctive section of a play; an act.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - act
+    - an
+    - distinct
+    - of
+    - play
+    - section
+  - id: 272591
+    entry: one of the ten varieties of dramatic composition.
+    type: noun
+    _stemmed_words_list:
+    - composit
+    - dramat
+    - of
+    - one
+    - ten
+    - the
+    - varieti
+  - id: 327133
+    entry: a physical combat between two opposing persons or armies; a wrestling or
+      battle.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - armi
+    - battl
+    - between
+    - combat
+    - oppos
+    - or
+    - person
+    - physic
+    - two
+    - wrestl
+  - id: 175048
+    entry: a professional wrestler.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - profession
+    - wrestler
+  - id: 332853
+    entry: a contention, in rivalry or to excel another; a competition; vying.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - anoth
+    - competit
+    - content
+    - excel
+    - in
+    - or
+    - rivalri
+    - to
+    - vy
+  - id: 245947
+    entry: the number nine, and the figure representing the number nine.
+    type: noun
+    _stemmed_words_list:
+    - and
+    - figur
+    - nine
+    - number
+    - repres
+    - the
+  - id: 233331
+    entry: a certain portion, either marked or not, on a surface or within an enclosed
+      building etc.
+    type: noun
+    _stemmed_words_list:
+    - a
+    - an
+    - build
+    - certain
+    - either
+    - enclos
+    - etc
+    - mark
+    - not
+    - 'on'
+    - or
+    - portion
+    - surfac
+    - within
+  - id: 167537
+    entry: the god of the firmament and of rain; Indra.
+    type: noun
+    _stemmed_words_list:
+    - and
+    - firmament
+    - god
+    - indra
+    - of
+    - rain
+    - the
+  - id: 203511
+    entry: the inner portion of anything or inner space.
+    type: noun
+    _stemmed_words_list:
+    - anyth
+    - inner
+    - of
+    - or
+    - portion
+    - space
+    - the
+  - id: 271635
+    entry: that which has comparatively been longer in existence; that which belongs
+      to older times.
+    type: noun
+    _stemmed_words_list:
+    - been
+    - belong
+    - compar
+    - exist
+    - has
+    - in
+    - longer
+    - older
+    - that
+    - time
+    - to
+    - which
