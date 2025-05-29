@@ -282,8 +282,6 @@ st.set_page_config(layout="wide") # Use wide layout for more space
 st.title("📖 [alar.ink](https://alar.ink/) Corpus English Definition Search (SQLite)")
 st.markdown("""
 Search within [alar.ink](https://alar.ink/)'s English definitions for a matching word in Kannada and filter by part of speech (type).
-This version uses an SQLite database (`alar_corpus.db`) for data storage and querying.
-Please ensure `create_db.py` has been run to generate the database from your YAML source.
 """)
 
 # Attempt to initialize database connection.
@@ -409,7 +407,6 @@ st.sidebar.info(
 st.sidebar.markdown("---")
 st.sidebar.markdown(f"Total unique entries in database: **{total_entries_in_db}**")
 st.sidebar.markdown("---")
-st.sidebar.caption(f"Ensure '{DB_PATH}' is present and populated. If not, run `create_db.py`.")
 
 # The Streamlit app automatically closes the connection when the script finishes or Streamlit re-runs.
 # However, explicitly closing is good practice if you were managing connections manually for long-lived objects.
