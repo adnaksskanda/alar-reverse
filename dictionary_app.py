@@ -120,7 +120,7 @@ Consider this a makeshift English-Kannada lookup to serve in the meantime as V. 
 """)
 
 # Load the dictionary data from alar.yml
-word_dict_lst = load_yaml_from_file("alar_stub.yml")
+word_dict_lst = load_yaml_from_file("alar_stemmed.yml")
 
 if not word_dict_lst:
     st.error("Dictionary data ('alar.yml') could not be loaded or is empty. Please ensure the file exists, is correctly formatted, and contains data.")
