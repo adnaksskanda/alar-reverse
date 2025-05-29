@@ -321,7 +321,7 @@ with col2:
 
 # --- Perform Search and Display Results ---
 # Trigger search if there's a search term OR a POS filter (other than "Any") is selected
-if search_definition_term_input or (selected_part_of_speech_filter and selected_part_of_speech_filter != "Any"):
+if search_definition_term_input and search_definition_term_input.strip():
     st.markdown("---") 
     
     # Call the database search function
@@ -336,11 +336,11 @@ if search_definition_term_input or (selected_part_of_speech_filter and selected_
         # Build the subheader message dynamically based on active filters
         subheader_message_parts = []
         if search_definition_term_input:
-            subheader_message_parts.append(f"definitions matching \"{search_definition_term_input}\"")
+            subheader_message_parts.append(f"definitions matching \"{search_definition_term_input.strip()}\"")
         if selected_part_of_speech_filter and selected_part_of_speech_filter != "Any":
             subheader_message_parts.append(f"part of speech \"{selected_part_of_speech_filter.capitalize()}\"")
         
-        criteria_message = " and ".join(subheader_message_parts)
+        criteria_message = " ".join(subheader_message_parts)
         if not criteria_message: # Should not happen if this block is reached
             criteria_message = "your criteria"
 
@@ -390,7 +390,7 @@ if search_definition_term_input or (selected_part_of_speech_filter and selected_
                     st.write("No definitions listed for this entry.")
     
     # If search was triggered but no results found
-    elif search_definition_term_input or (selected_part_of_speech_filter and selected_part_of_speech_filter != "Any"): 
+    else: 
         st.info(f"No entries found matching your criteria.")
 else:
     # Initial state or when search term is cleared and POS is "Any"
