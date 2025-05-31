@@ -23,7 +23,7 @@ wordnet_available = False
 # --- Sentence Transformer Model Loading ---
 # Placed after global configurations
 SENTENCE_MODEL_NAME = 'all-MiniLM-L6-v2' # A good default
-SEMANTIC_SIMILARITY_THRESHOLD = 0.5      # Adjust for sentence embeddings
+SEMANTIC_SIMILARITY_THRESHOLD = 0.3      # Adjust for sentence embeddings
 
 KANNADA_FREQUENCY_DB_PATH = "./kannada_frequencies.db" # <<< NEW: Path to your frequency DB
 COMMONNESS_WEIGHT = 0.3  # <<< NEW: Weight for commonness score (0.0 to 1.0)
@@ -340,53 +340,58 @@ def get_antonyms_for_query(query_text, lemmatizer_instance, stop_words_set):
     return final_antonyms_lemmatized
 
 # Replace your existing nlp_based_search_from_db or adapt it
-def sentence_embedding_search_on_the_fly(conn, original_query_text, selected_pos,
-                                         stemmer_instance, lemmatizer_instance, stop_words_set,
-                                         sentence_model_instance, # New parameter
-                                         use_wordnet_elaboration=True): # Keep WordNet elaboration part
-    if not conn: st.error("DB connection unavailable."); return []
-    if not sentence_model_instance: 
-        st.error("Sentence embedding model not loaded. Cannot perform semantic search.")
-        return []
+# ... (imports and other functions like get_db_connection, preprocess_text, elaborate_query, get_antonyms etc. are assumed to be the same) ...
 
+# Inside your Streamlit app script:
+
+def sentence_embedding_search_on_the_fly(conn, freq_conn, # <<< freq_conn parameter
+                                           original_query_text, selected_pos,
+                                           stemmer_instance, lemmatizer_instance, stop_words_set,
+                                           sentence_model_instance,
+                                           use_llm_elaboration_toggle=False,
+                                           llm_instance_passed=None):
+    # ... (initial checks for conn, sentence_model_instance, cleaned_original_query - same as before) ...
+    if not conn: st.error("Main DB connection unavailable."); return []
+    if not sentence_model_instance: st.error("Sentence embedding model not loaded."); return []
     cleaned_original_query = original_query_text.strip()
     if not cleaned_original_query: return []
 
-    # Step 1: Elaborate Query (using your existing WordNet function)
-    # elaborate_query_with_wordnet should return:
-    # display_elaboration, keywords_for_prefilter, text_to_embed_for_query
-    display_elaboration, keywords_for_prefilter, elaborated_text_for_embedding = \
-        elaborate_query_with_wordnet(cleaned_original_query, stemmer_instance, lemmatizer_instance, stop_words_set, 
-                                     max_senses=1 if use_wordnet_elaboration and wordnet_available else 0,
-                                     max_synonyms_per_sense=2 if use_wordnet_elaboration and wordnet_available else 0)
-
+    # ... (Step 1: Elaborate Query - same as before, getting display_elaboration, 
+    #      keywords_for_prefilter, elaborated_text_for_embedding) ...
+    if use_llm_elaboration_toggle and llm_instance_passed:
+        display_elaboration, keywords_for_prefilter, elaborated_text_for_embedding = \
+            elaborate_query_with_local_llm(cleaned_original_query, llm_instance_passed, 
+                                           stemmer_instance, lemmatizer_instance, stop_words_set)
+    else: 
+        display_elaboration, keywords_for_prefilter, elaborated_text_for_embedding = \
+            elaborate_query_with_wordnet(cleaned_original_query, stemmer_instance, lemmatizer_instance, stop_words_set,
+                                         max_senses=1 if wordnet_available else 0,
+                                         max_synonyms_per_sense=2 if wordnet_available else 0)
+    
     query_antonyms_lemmatized = set()
-    if use_wordnet_elaboration and wordnet_available:
+    if wordnet_available:
         query_antonyms_lemmatized = get_antonyms_for_query(cleaned_original_query, lemmatizer_instance, stop_words_set)
-        if display_elaboration != cleaned_original_query:
-            with st.expander("Query Elaboration Context (WordNet)", expanded=False):
-                 st.markdown(display_elaboration)
-        if query_antonyms_lemmatized:
-            st.caption(f"Note: Results with antonyms like '{', '.join(list(query_antonyms_lemmatized)[:5])}...' may be penalized.")
+    
+    if display_elaboration != cleaned_original_query : 
+            with st.expander("Query Elaboration Context", expanded=False): st.markdown(display_elaboration)
+    # Antonym caption moved to after pre-filtering, before final ranking, if any antonyms are found.
 
     if not keywords_for_prefilter and not elaborated_text_for_embedding.strip():
         st.info("Could not derive effective keywords or elaboration from query."); return []
 
-    # Generate embedding for the (possibly elaborated) query
     try:
         query_embedding = sentence_model_instance.encode(elaborated_text_for_embedding)
-    except Exception as e:
-        st.error(f"Error encoding query text ('{elaborated_text_for_embedding[:100]}...'): {e}"); return []
+    except Exception as e: st.error(f"Error encoding query: {e}"); return []
 
-    # Step 2: Keyword Pre-filtering from DB
-    # This part remains largely the same, fetching 'definition_entry' for candidates
+    # ... (Step 2: Keyword Pre-filtering - same as before, yielding candidate_definitions_from_db
+    #      which is a list of dicts: {'definition_id': ..., 'word_id': ..., 'raw_text': ...}) ...
     is_pos_filter_active = selected_pos and selected_pos.lower() != "any"
     selected_pos_lower = selected_pos.lower() if is_pos_filter_active else ""
-    sql_fetch_for_prefilter = "SELECT id as definition_id, word_id, definition_entry, stemmed_words_text FROM definitions WHERE stemmed_words_text IS NOT NULL" # Ensure you fetch definition_entry
+    sql_fetch_for_prefilter = "SELECT id as definition_id, word_id, definition_entry, stemmed_words_text FROM definitions WHERE stemmed_words_text IS NOT NULL"
     params_prefilter = []
     if is_pos_filter_active: sql_fetch_for_prefilter += " AND LOWER(type) = ?"; params_prefilter.append(selected_pos_lower)
-
-    candidate_definitions_from_db = [] # List of dicts: {'definition_id': ..., 'word_id': ..., 'raw_text': ...}
+    
+    candidate_definitions_from_db = [] 
     cursor = conn.cursor()
     try:
         cursor.execute(sql_fetch_for_prefilter, params_prefilter)
@@ -397,71 +402,153 @@ def sentence_embedding_search_on_the_fly(conn, original_query_text, selected_pos
             if any(keyword in definition_stemmed_set for keyword in keywords_for_prefilter):
                 candidate_definitions_from_db.append({'definition_id': row['definition_id'], 
                                                     'word_id': row['word_id'], 
-                                                    'raw_text': row['definition_entry']}) # Store raw_text
+                                                    'raw_text': row['definition_entry']})
                 if len(candidate_definitions_from_db) >= MAX_PREFILTER_CANDIDATES: break
     except sqlite3.Error as e: st.error(f"Error during keyword pre-filtering: {e}"); return []
 
-    if not candidate_definitions_from_db: st.info("Keyword pre-filter found no candidate definitions."); return []
-    # st.write(f"Keyword pre-filter: {len(candidate_definitions_from_db)} candidates. Encoding definitions...")
+    if not candidate_definitions_from_db: st.info("Keyword pre-filter found no candidates."); return []
 
 
-    # Step 3: On-the-fly Embedding Generation for Candidates & Similarity Calculation
+    # Step 3: On-the-fly Embedding for Candidates & Initial Relevance Score
     definition_texts_to_embed = [cand['raw_text'] for cand in candidate_definitions_from_db if cand['raw_text']]
-    results_with_scores = []
-
+    results_with_scores = [] # Will store {'word_id': ..., 'raw_text': ..., 'relevance_score': ..., 'final_score': ...}
+    
     if definition_texts_to_embed:
         try:
-            # Batch encode all candidate definition texts
             definition_embeddings = sentence_model_instance.encode(definition_texts_to_embed)
-
-            # Calculate cosine similarities between query_embedding and all definition_embeddings
-            # query_embedding needs to be reshaped to (1, D) if it's (D,)
             if query_embedding.ndim == 1: query_embedding_reshaped = query_embedding.reshape(1, -1)
             else: query_embedding_reshaped = query_embedding
-
             similarities = cosine_similarity(query_embedding_reshaped, definition_embeddings).flatten()
 
-            idx = 0 # To map similarities back to candidate_definitions_from_db if some raw_text was empty
+            processed_cand_idx = 0
             for i, cand_def_info in enumerate(candidate_definitions_from_db):
-                if not cand_def_info['raw_text']: continue # Skip if raw_text was empty
+                if not cand_def_info['raw_text']: continue
+                relevance_score = float(similarities[processed_cand_idx])
+                processed_cand_idx += 1
+                
+                # Apply semantic threshold to relevance_score now
+                if relevance_score >= SEMANTIC_SIMILARITY_THRESHOLD:
+                    results_with_scores.append({**cand_def_info, 'relevance_score': relevance_score}) 
+        except Exception as e: st.error(f"Error during sentence embedding/similarity: {e}"); return []
+    
+    if not results_with_scores: st.info(f"No definitions passed initial semantic similarity threshold ({SEMANTIC_SIMILARITY_THRESHOLD})."); return []
 
-                score = float(similarities[idx])
-                idx += 1
+    # --- NEW Step 3.5: Fetch Kannada Headwords, Frequencies, and Combine Scores ---
+    kannada_headwords_map = {} # word_id -> kannada_word
+    if freq_conn: # Only if frequency DB connection is available
+        candidate_word_ids_for_freq = list(set(r['word_id'] for r in results_with_scores))
+        if candidate_word_ids_for_freq:
+            placeholders_freq = ','.join(['?'] * len(candidate_word_ids_for_freq))
+            sql_words = f"SELECT id, entry_text FROM words WHERE id IN ({placeholders_freq})"
+            try:
+                main_db_cursor = conn.cursor()
+                main_db_cursor.execute(sql_words, candidate_word_ids_for_freq)
+                for row in main_db_cursor.fetchall():
+                    kannada_headwords_map[row['id']] = row['entry_text'] # Assuming entry_text is Kannada
+            except sqlite3.Error as e:
+                st.warning(f"Could not fetch Kannada headwords for frequency lookup: {e}")
 
-                # Antonym Penalization (optional)
-                if query_antonyms_lemmatized and wordnet_available:
-                    definition_lemmas_set = set(preprocess_text_for_tfidf(cand_def_info['raw_text'], lemmatizer_global, english_stopwords_global))
-                    if any(antonym in definition_lemmas_set for antonym in query_antonyms_lemmatized):
-                        score *= 0.1 
+        # Get raw frequencies for all items in results_with_scores
+        raw_frequencies_list = []
+        for res_item in results_with_scores:
+            kannada_word = kannada_headwords_map.get(res_item['word_id'])
+            raw_freq = get_kannada_word_frequency(freq_conn, kannada_word) if kannada_word else 0
+            res_item['raw_frequency'] = raw_freq
+            if raw_freq > 0: # Only collect positive frequencies for normalization scaling
+                raw_frequencies_list.append(raw_freq)
+        
+        # Normalize positive frequencies (log transform then min-max to 0-1)
+        # This normalization happens only over the words that *were found* in frequency DB
+        # and are present in the current batch of semantically relevant results.
+        norm_commonness_scores_map = {} # word_id -> normalized_commonness_score
+        if raw_frequencies_list: # If any words had a frequency > 0
+            log_frequencies_for_scaling = np.log1p(np.array([f for f in raw_frequencies_list if f > 0], dtype=float))
+            if len(log_frequencies_for_scaling) > 0:
+                min_log_freq = np.min(log_frequencies_for_scaling)
+                max_log_freq = np.max(log_frequencies_for_scaling)
 
-                if score >= SEMANTIC_SIMILARITY_THRESHOLD:
-                    results_with_scores.append({**cand_def_info, 'similarity': score})
-        except Exception as e:
-            st.error(f"Error during sentence embedding of definitions or similarity calculation: {e}"); return []
+                for res_item in results_with_scores:
+                    if res_item['raw_frequency'] > 0:
+                        log_f = np.log1p(res_item['raw_frequency'])
+                        if (max_log_freq - min_log_freq) > 1e-9: # Avoid division by zero
+                            norm_commonness_scores_map[res_item['word_id']] = (log_f - min_log_freq) / (max_log_freq - min_log_freq)
+                        else: # All found words have the same frequency
+                            norm_commonness_scores_map[res_item['word_id']] = 1.0 # Max commonness among this set
+                    else:
+                        norm_commonness_scores_map[res_item['word_id']] = 0.0 # Not found or freq is 0
+            else: # No positive frequencies in the batch (all were 0)
+                 for res_item in results_with_scores:
+                    norm_commonness_scores_map[res_item['word_id']] = 0.0
+        else: # No words in batch had any frequency data
+            for res_item in results_with_scores:
+                norm_commonness_scores_map[res_item['word_id']] = 0.0
 
-    results_with_scores.sort(key=lambda x: x['similarity'], reverse=True)
-    if not results_with_scores: st.info(f"No definitions passed semantic similarity threshold ({SEMANTIC_SIMILARITY_THRESHOLD})."); return []
+    # Calculate final scores and apply antonym penalization
+    if query_antonyms_lemmatized and wordnet_available: # Show caption only if antonyms were derived
+        st.caption(f"Note: Results with antonyms like '{', '.join(list(query_antonyms_lemmatized)[:5])}...' may be penalized.")
 
-    # Step 4: Fetch Full Data & Format Results (this part remains the same)
-    # ... (copy the existing Step 4 logic from your script here) ...
-    # It will use `results_with_scores` to build `word_max_similarity`, `distinct_word_ids_to_fetch`,
-    # and then fetch full word data and definitions to create `final_results_list`.
-    word_max_similarity = {}; distinct_word_ids_to_fetch = set()
+    for res_item in results_with_scores:
+        penalized_relevance = res_item['relevance_score']
+        
+        if query_antonyms_lemmatized and wordnet_available:
+            definition_lemmas_set = set(preprocess_text_for_tfidf(res_item['raw_text'], lemmatizer_instance, stop_words_set))
+            if any(antonym in definition_lemmas_set for antonym in query_antonyms_lemmatized):
+                penalized_relevance *= 0.1 # Apply penalty
+
+        # Combine with commonness score
+        if freq_conn and res_item.get('raw_frequency', 0) > 0 : # Word found in freq DB
+            # Use the pre-calculated normalized commonness for this word_id
+            current_normalized_commonness = norm_commonness_scores_map.get(res_item['word_id'], 0.0)
+            res_item['final_score'] = (RELEVANCE_WEIGHT * penalized_relevance) + \
+                                      (COMMONNESS_WEIGHT * current_normalized_commonness)
+        else: # Word not found in freq DB or freq_db not connected, score is just penalized relevance
+            res_item['final_score'] = penalized_relevance
+            res_item['commonness_score_normalized'] = 0.0 # Explicitly state no commonness contribution
+
+    # Sort by the new final_score
+    results_with_scores.sort(key=lambda x: x.get('final_score', 0.0), reverse=True)
+    # No need to filter by SEMANTIC_SIMILARITY_THRESHOLD again if it was applied to relevance_score
+    # The list results_with_scores now contains items that already passed the relevance threshold
+    # and are now sorted by a combined score or just their penalized relevance.
+
+    if not results_with_scores: st.info(f"No definitions remained after all ranking stages."); return []
+
+
+    # Step 4: Fetch Full Data & Format Results (using `results_with_scores` which is now sorted by final_score)
+    # word_max_similarity should now be based on 'final_score' from results_with_scores
+    # (The rest of this step remains the same as in your script, ensuring it uses `final_score` for `word_max_similarity`
+    #  and limits to MAX_FINAL_RESULTS)
+    word_max_final_score = {}; distinct_word_ids_to_fetch = set()
+    # Iterate through the already sorted results_with_scores to pick words for final display
+    temp_final_word_candidates = []
     for r_def in results_with_scores: 
-        w_id = r_def['word_id']; distinct_word_ids_to_fetch.add(w_id)
-        if w_id not in word_max_similarity or r_def['similarity'] > word_max_similarity[w_id]: word_max_similarity[w_id] = r_def['similarity']
-        if len(distinct_word_ids_to_fetch) >= MAX_FINAL_RESULTS + 20: break 
+        w_id = r_def['word_id']
+        final_score = r_def.get('final_score', 0.0) # This is the score we care about now
+        
+        if w_id not in distinct_word_ids_to_fetch:
+            temp_final_word_candidates.append({'word_id': w_id, 'score': final_score})
+            distinct_word_ids_to_fetch.add(w_id)
+            if len(distinct_word_ids_to_fetch) >= MAX_FINAL_RESULTS + 10: # Get a few extra before final limit
+                 break 
+    
+    # Sort these unique words by their highest score
+    temp_final_word_candidates.sort(key=lambda x: x['score'], reverse=True)
+    
+    final_word_ids_to_display = [item['word_id'] for item in temp_final_word_candidates[:MAX_FINAL_RESULTS+20]] # Allow some buffer
+    # Re-create word_max_final_score based on this potentially smaller, sorted list of words
+    word_max_final_score = {item['word_id']: item['score'] for item in temp_final_word_candidates}
 
-    if not distinct_word_ids_to_fetch: return []
-    final_word_ids_list = sorted(list(distinct_word_ids_to_fetch), key=lambda wid: word_max_similarity.get(wid, 0.0), reverse=True)
 
-    placeholders = ','.join(['?'] * len(final_word_ids_list))
+    if not final_word_ids_to_display: return []
+    
+    # Fetch data only for these top words
+    placeholders = ','.join(['?'] * len(final_word_ids_to_display))
     sql_fetch_words = f"SELECT id, head, entry_text, phone, origin, info FROM words WHERE id IN ({placeholders})"
     sql_fetch_all_definitions = f"SELECT id, word_id, definition_entry, type FROM definitions WHERE word_id IN ({placeholders})"
     words_data_map = {}; definitions_by_word_id_map = {}
     try: 
-        cursor.execute(sql_fetch_words, final_word_ids_list); words_data_map = {r['id']: dict(r) for r in cursor.fetchall()}
-        cursor.execute(sql_fetch_all_definitions, final_word_ids_list)
+        cursor.execute(sql_fetch_words, final_word_ids_to_display); words_data_map = {r['id']: dict(r) for r in cursor.fetchall()}
+        cursor.execute(sql_fetch_all_definitions, final_word_ids_to_display)
         for dr in cursor.fetchall():
             w_id = dr['word_id']
             if w_id not in definitions_by_word_id_map: definitions_by_word_id_map[w_id] = []
@@ -469,17 +556,18 @@ def sentence_embedding_search_on_the_fly(conn, original_query_text, selected_pos
     except sqlite3.Error as e: st.error(f"DB error fetching final details: {e}"); return []
 
     final_results_list = []
-    for word_id_val in final_word_ids_list:
+    # Iterate based on the order of final_word_ids_to_display which is already sorted by score
+    for word_id_val in final_word_ids_to_display: 
         if word_id_val not in words_data_map: continue
         word_info_dict = words_data_map[word_id_val]
         final_results_list.append({
             'id': word_info_dict['id'], 'entry': word_info_dict['entry_text'], 'head': word_info_dict['head'], 
             'phone': word_info_dict['phone'], 'origin': word_info_dict['origin'], 'info': word_info_dict['info'],
-            'defs': definitions_by_word_id_map.get(word_id_val, []), 'max_similarity': word_max_similarity.get(word_id_val, 0.0) 
+            'defs': definitions_by_word_id_map.get(word_id_val, []), 
+            'max_similarity': word_max_final_score.get(word_id_val, 0.0) # This is the combined score
         })
-        if len(final_results_list) >= MAX_FINAL_RESULTS: break
+        if len(final_results_list) >= MAX_FINAL_RESULTS: break # Ensure we don't exceed display limit
     return final_results_list
-
 
 # --- 4. Streamlit User Interface ---
 # st.set_page_config(page_title="Alar.ink Definition Search", layout="wide")
@@ -500,6 +588,8 @@ if not sentence_transformers_available or sentence_model_global is None:
     st.sidebar.error("Sentence Transformer model not available. Semantic search functionality is disabled.")
     # You might want to fall back to a simpler search or just show an error if this is the primary search method.
 
+freq_db_connection = KANNADA_FREQUENCY_DB_PATH
+use_llm_for_elaboration = False
 
 if not wordnet_available: # Check the flag set by initial NLTK setup
     st.sidebar.warning("WordNet data is not fully available. Query elaboration will be basic or disabled.")
@@ -530,16 +620,17 @@ should_use_wordnet_for_elaboration = use_wordnet_elaboration_checkbox and wordne
 if search_definition_term_input and search_definition_term_input.strip():
     st.markdown("---") 
     with st.spinner("Elaborating query and searching... This may take a moment."):
-        search_results_list = sentence_embedding_search_on_the_fly( # Call the new function
-            db_connection, 
-            search_definition_term_input, 
+        search_results_list = sentence_embedding_search_on_the_fly(
+            db_connection,
+            freq_db_connection, # <<< Pass the frequency DB connection
+            search_definition_term_input,
             selected_part_of_speech_filter,
-            stemmer_global, 
-            lemmatizer_global, # Pass lemmatizer
-            english_stopwords_global, 
-            sentence_model_global, # Pass the loaded sentence model
-            use_wordnet_elaboration = should_use_wordnet_for_elaboration
-            # Removed LLM params
+            stemmer_global,
+            lemmatizer_global,
+            english_stopwords_global,
+            sentence_model_global,
+            use_llm_elaboration_toggle=use_llm_for_elaboration, # Assuming you still have this toggle
+            llm_instance_passed=local_llm_instance if use_llm_for_elaboration else None
         )
 
     total_found_count = len(search_results_list)
