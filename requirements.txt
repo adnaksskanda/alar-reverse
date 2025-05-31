@@ -1,3 +1,7 @@
 streamlit
 PyYAML
 nltk
+sklearn
+nltk
+llama_cpp
+numpy<2
