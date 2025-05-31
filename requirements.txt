@@ -1,7 +1,9 @@
 streamlit
 PyYAML
 nltk
-sklearn
-nltk
-llama_cpp
+scikit-learn
 numpy<2
+huggingface-hub 
+llama-cpp-python
+
+
