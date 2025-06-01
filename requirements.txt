@@ -3,7 +3,5 @@ PyYAML
 nltk
 scikit-learn
 numpy<2
-huggingface-hub 
-llama-cpp-python
-
+openai
 
