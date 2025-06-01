@@ -1,5 +1,0 @@
-wordnet
-omw-1.4
-punkt
-averaged_perceptron_tagger
-stopwords

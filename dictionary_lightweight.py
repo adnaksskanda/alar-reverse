@@ -6,7 +6,6 @@ import numpy as np
 
 # NLTK imports
 import nltk
-nltk.data.path.append(os.path.join(os.path.dirname(__file__), 'nltk_data'))
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
