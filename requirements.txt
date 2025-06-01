@@ -3,5 +3,4 @@ PyYAML
 nltk
 scikit-learn
 numpy<2
-openai
-
+sentence-transformer
