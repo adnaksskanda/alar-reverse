@@ -2,5 +2,5 @@ streamlit
 PyYAML
 nltk
 scikit-learn
+sentence_transformers
 numpy<2
-sentence-transformer
